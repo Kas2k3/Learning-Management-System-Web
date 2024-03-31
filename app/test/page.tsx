@@ -1,7 +1,9 @@
 const TestPage = () => {
     return (
-        This is a test page
-      );
+        <div>
+            This should be unprotected
+        </div>
+    );
 }
 
 export default TestPage;

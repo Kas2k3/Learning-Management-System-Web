@@ -1,14 +1,13 @@
-const GroupLayout = ({
+const AuthLayout = ({
     children
 }: {
     children: React.ReactNode
 }) => {
     return (
-        <div className="h-full bg-sky-700"
-            text-white>
+        <div className="h-full flex items-center justify-center">
             {children}
         </div>
     );
 }
 
-export default GroupLayout;
+export default AuthLayout;
