@@ -4,21 +4,28 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Pencil } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
-    FormLabel,
     FormItem,
     FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { title } from "process";
+
+interface TitleFormProps {
+    initialData: {
+        title: string;
+    };
+    courseId: string;
+}
 
 const formSchema = z.object({
     title: z.string().min(1, {
@@ -26,85 +33,88 @@ const formSchema = z.object({
     }),
 });
 
-const CreatePage = () => {
+export const TitleForm = ({
+    initialData,
+    courseId
+}: TitleFormProps) => {
+    const [isEditing, setIsEditing] = useState(false);
+
+    const toggleEdit = () => setIsEditing((current) => !current);
+
     const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            title: ""
-        },
+        defaultValues: initialData,
     });
 
     const { isSubmitting, isValid } = form.formState;
-
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const response = await axios.post("/api/courses", values);
-            router.push(`/teacher/courses/${response.data.id}`);
-            toast.success("Đã tạo thành công");
-        }
-        catch {
+            await axios.patch(`api/course/${courseId}`, values);
+            toast.success("Đã cập nhật khóa học");
+            toggleEdit();
+            router.refresh();
+        } catch {
             toast.error("Đã xảy ra sự cố");
         }
+        console.log(values);
     }
 
     return (
-        <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
-            <div>
-                <h1 className="text-2xl">
-                    Khóa học của bạn
-                </h1>
-                <p className="text-sm text-slate-600">
-                    Bạn có muốn đặt tên cho khóa học của mình? Bạn cũng có thể thay đổi tên nó sau này tùy ý.
+        <div className="mt-6 border bg-slate-100 rounded-md p-4">
+            <div className="font-medium flex items-center justify-between">
+                Tên khóa học
+                <Button onClick={toggleEdit} variant="ghost">
+                    {isEditing ? (
+                        <>Hủy bỏ</>
+                    ) : (
+                        <>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Chỉnh sửa tên
+                        </>
+                    )}
+                </Button>
+            </div>
+            {!isEditing && (
+                <p className="text-sm mt-2">
+                    {initialData.title}
                 </p>
+            )}
+            {isEditing && (
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 mt-8"
+                        className="space-y-4 mt-4"
                     >
                         <FormField
                             control={form.control}
                             name="title"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        Nhập tên khóa học
-                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isSubmitting}
-                                            placeholder="VD: Cấu trúc dữ liệu và Thuật toán... "
+                                            placeholder="VD: Lập trình hướng đối tượng"
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormDescription>
-                                        Bạn sẽ dạy gì trong khóa học này?
-                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <div className="flex items-center gap-x-2">
-                            <Link href="/">
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                >
-                                    Hủy bỏ
-                                </Button>
-                            </Link>
                             <Button
-                                type="submit"
                                 disabled={!isValid || isSubmitting}
+                                type="submit"
                             >
-                                Tiếp tục
+                                Lưu
                             </Button>
                         </div>
                     </form>
                 </Form>
-            </div>
-        </div>
-    );
+            )
+            }
+        </div >
+    )
 }
-
-export default CreatePage;
