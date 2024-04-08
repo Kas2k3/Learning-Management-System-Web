@@ -29,7 +29,7 @@ interface TitleFormProps {
 
 const formSchema = z.object({
     title: z.string().min(1, {
-        message: "Title is required",
+        message: "Vui lòng không để trống",
     }),
 });
 
@@ -51,7 +51,7 @@ export const TitleForm = ({
     const { isSubmitting, isValid } = form.formState;
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`api/course/${courseId}`, values);
+            await axios.patch(`/api/courses/${courseId}`, values);
             toast.success("Đã cập nhật khóa học");
             toggleEdit();
             router.refresh();
