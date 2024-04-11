@@ -21,11 +21,10 @@ import { Button } from "@/components/ui/button";
 import { title } from "process";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { Course } from "@prisma/client";
 
 interface DescriptionFormProps {
-    initialData: {
-        description: string;
-    };
+    initialData: Course;
     courseId: string;
 }
 
@@ -47,7 +46,9 @@ export const DescriptionForm = ({
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData,
+        defaultValues: {
+            description: initialData?.description || "",
+        },
     });
 
     const { isSubmitting, isValid } = form.formState;
@@ -60,7 +61,6 @@ export const DescriptionForm = ({
         } catch {
             toast.error("Đã xảy ra sự cố");
         }
-        console.log(values);
     }
 
     return (
