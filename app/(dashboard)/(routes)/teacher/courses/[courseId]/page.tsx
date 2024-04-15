@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ListChecks } from "lucide-react";
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
@@ -89,8 +89,20 @@ const CourseIdPage = async ({
                             label: category.name,
                             value: category.id,
                         }))}
-
                     />
+                </div>
+                <div className="space-y-6">
+                    <div className="mt-6">
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={ListChecks} />
+                            <h2 className="text-xl">
+                                Các chương chính
+                            </h2>
+                        </div>
+                        <div>
+                            Cần học:
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
