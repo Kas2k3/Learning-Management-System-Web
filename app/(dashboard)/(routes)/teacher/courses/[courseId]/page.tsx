@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, ListChecks } from "lucide-react";
+import { LayoutDashboard, ListChecks, File } from "lucide-react";
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
@@ -8,6 +8,7 @@ import { IconBadge } from "@/components/icon-badge";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
+import { AttachmentForm } from "./_components/attachment-form";
 import { CategoryForm } from "./_components/category-form";
 
 const CourseIdPage = async ({
@@ -24,7 +25,14 @@ const CourseIdPage = async ({
     const course = await db.course.findUnique({
         where: {
             id: params.courseId
-        }
+        },
+        include: {
+            attachments: {
+                orderBy: {
+                    createAt: "desc",
+                },
+            },
+        },
     });
 
     const categories = await db.category.findMany({
@@ -103,6 +111,16 @@ const CourseIdPage = async ({
                             Cần học:
                         </div>
                     </div>
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge icon={File} />
+                        <h2 className="text-xl">
+                            Tài nguyên và tệp đính kèm
+                        </h2>
+                    </div>
+                    <AttachmentForm
+                        initialData={course}
+                        courseId={course.id}
+                    />
                 </div>
             </div>
         </div>
