@@ -21,10 +21,10 @@ import { Button } from "@/components/ui/button";
 import { title } from "process";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-import { Course } from "@prisma/client";
+import { Chapter, Course } from "@prisma/client";
 
 interface ChaptersFormProps {
-    initialData: Course;
+    initialData: Course & { chapters: Chapter[] };
     courseId: string;
 }
 
@@ -68,7 +68,7 @@ export const ChaptersForm = ({
     return (
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                Các chương trong khóa học
+                Các chương cần học
                 <Button onClick={toggleCreating} variant="ghost">
                     {isCreating ? (
                         <>Hủy bỏ</>
@@ -92,9 +92,9 @@ export const ChaptersForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Textarea
+                                        <Input
                                             disabled={isSubmitting}
-                                            placeholder="VD: Khóa học này cung cấp cho bạn..."
+                                            placeholder="VD: Giới thiệu chung về..."
                                             {...field}
                                         />
                                     </FormControl>
@@ -113,9 +113,11 @@ export const ChaptersForm = ({
             )}
             {!isCreating && (
                 <div className={cn(
-                    "text-sm mt-2"
+                    "text-sm mt-2",
+                    !initialData.chapters.length && "text-slate-500 italic"
                 )}>
-                    Không có chương nào
+                    {!initialData.chapters.length && "Chưa có chương nào"}
+                    {/*Thêm vào danh sách các chương */}
                 </div>
             )}
             {!isCreating && (
@@ -124,7 +126,6 @@ export const ChaptersForm = ({
                 </p>
             )}
 
-            }
         </div >
     )
 }

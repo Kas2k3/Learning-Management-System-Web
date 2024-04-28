@@ -25,7 +25,8 @@ const CourseIdPage = async ({
 
     const course = await db.course.findUnique({
         where: {
-            id: params.courseId
+            id: params.courseId,
+            userId
         },
         include: {
             chapters: {
@@ -56,7 +57,8 @@ const CourseIdPage = async ({
         course.description,
         course.imageUrl,
         // course.price,
-        course.categoryId
+        course.categoryId,
+        course.chapters.some(chapter => chapter.isPublished),
     ];
 
     const totalFields = requiredFields.length;
@@ -110,7 +112,7 @@ const CourseIdPage = async ({
                         <div className="flex items-center gap-x-2">
                             <IconBadge icon={ListChecks} />
                             <h2 className="text-xl">
-                                Các chương chính
+                                Nội dung trong khóa học này
                             </h2>
                         </div>
                         <ChaptersForm
