@@ -35,6 +35,7 @@ export const ChaptersList = ({
         setChapters(items);
     }, [items]);
 
+    //Cap nhat cac chapter khi sap xep
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) return;
 
