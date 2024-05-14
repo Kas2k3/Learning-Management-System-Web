@@ -81,14 +81,15 @@ export const ChapterDescriptionForm = ({
             </div>
             {!isEditing && (
                 <div className={cn(
-                    "text=sm mt-2",
+                    "text-sm mt-2",
                     !initialData.description && "text-slate-500 italic"
                 )}>
                     {!initialData.description && "Không có mô tả"}
                     {initialData.description && (
                         <Preview
-                            value={initialData.description}
-                        />
+                            value={initialData.description} onChange={function (value: string): void {
+                                throw new Error("Function not implemented.");
+                            }} />
                     )}
                 </div>
             )}
