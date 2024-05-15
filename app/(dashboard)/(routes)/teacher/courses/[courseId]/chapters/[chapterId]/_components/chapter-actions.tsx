@@ -25,13 +25,33 @@ export const ChapterActions = ({
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
+    const onClick = async () => {
+        try {
+            setIsLoading(true);
+
+            if (isPublished) {
+                await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/unpublish`);
+                toast.success("Hủy xuất bản chương học này");
+            } else {
+                await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/publish`);
+                toast.success("Đã xuất bản chương học này");
+            }
+
+            router.refresh();
+        } catch {
+            toast.error("Đã xảy ra sự cố");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const onDelete = async () => {
         try {
             setIsLoading(true);
 
             await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}`);
 
-            toast.success("Đã xóa chương học");
+            toast.success("Đã xóa chương học này");
             router.refresh();
             router.push(`/teacher/courses/${courseId}`);
         } catch {
@@ -44,12 +64,12 @@ export const ChapterActions = ({
     return (
         <div className="flex items-center gap-x-2">
             <Button
-                onClick={() => { }}
+                onClick={onClick}
                 disabled={disabled || isLoading}
                 variant="outline"
                 size="sm"
             >
-                {isPublished ? "Không xuất bản" : "Xuất bản"}
+                {isPublished ? "Hủy xuất bản" : "Xuất bản"}
             </Button>
             <ConfirmModal onConfirm={onDelete} >
                 <Button size="sm" disabled={isLoading}>
